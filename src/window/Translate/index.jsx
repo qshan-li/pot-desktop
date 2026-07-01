@@ -121,17 +121,6 @@ export default function Translate() {
             setPined(true);
         }
     }, [alwaysOnTop]);
-    // 输入翻译快捷键触发自动置顶
-    useEffect(() => {
-        const unlistenAutoPin = listen('auto_pin', () => {
-            pinWindow();
-        });
-        return () => {
-            unlistenAutoPin.then((f) => {
-                f();
-            });
-        };
-    }, []);
     // 保存窗口位置
     useEffect(() => {
         if (windowPosition !== null && windowPosition === 'pre_state') {
@@ -299,6 +288,7 @@ export default function Translate() {
                                 <SourceArea
                                     pluginList={pluginList}
                                     serviceInstanceConfigMap={serviceInstanceConfigMap}
+                                    onInputTranslate={pinWindow}
                                 />
                             )}
                         </div>

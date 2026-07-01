@@ -268,8 +268,6 @@ pub fn input_translate() {
     }
 
     window.emit("new_text", "[INPUT_TRANSLATE]").unwrap();
-    // 自动置顶：前端监听 auto_pin 事件执行 pin 逻辑
-    window.emit("auto_pin", ()).unwrap();
 }
 
 pub fn text_translate(text: String) {

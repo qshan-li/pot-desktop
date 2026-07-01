@@ -30,7 +30,7 @@ let unlisten = null;
 let timer = null;
 
 export default function SourceArea(props) {
-    const { pluginList, serviceInstanceConfigMap } = props;
+    const { pluginList, serviceInstanceConfigMap, onInputTranslate } = props;
     const [appFontSize] = useConfig('app_font_size', 16);
     const [sourceText, setSourceText, syncSourceText] = useSyncAtom(sourceTextAtom);
     const [detectLanguage, setDetectLanguage] = useAtom(detectLanguageAtom);
@@ -61,6 +61,7 @@ export default function SourceArea(props) {
         setDetectLanguage('');
         if (text === '[INPUT_TRANSLATE]') {
             setWindowType('[INPUT_TRANSLATE]');
+            onInputTranslate();
             appWindow.show();
             appWindow.setFocus();
             setSourceText('', true);
