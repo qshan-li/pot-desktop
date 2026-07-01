@@ -240,6 +240,15 @@ pub fn selection_translate() {
 
 pub fn input_translate() {
     let app_handle = APP.get().unwrap();
+
+    // 窗口可见时再次按下快捷键，等同于按 ESC 关闭窗口
+    if let Some(window) = app_handle.get_window("translate") {
+        if window.is_visible().unwrap_or(false) {
+            window.close().unwrap();
+            return;
+        }
+    }
+
     // Clear State
     let state: tauri::State<StringWrapper> = app_handle.state();
     state
@@ -257,6 +266,8 @@ pub fn input_translate() {
     }
 
     window.emit("new_text", "[INPUT_TRANSLATE]").unwrap();
+    // 自动置顶：前端监听 auto_pin 事件执行 pin 逻辑
+    window.emit("auto_pin", ()).unwrap();
 }
 
 pub fn text_translate(text: String) {

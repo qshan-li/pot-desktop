@@ -83,6 +83,18 @@ export default function Translate() {
     const [pined, setPined] = useState(false);
     const [pluginList, setPluginList] = useState(null);
     const [serviceInstanceConfigMap, setServiceInstanceConfigMap] = useState(null);
+    const pinWindow = () => {
+        unlistenBlur();
+        appWindow.setAlwaysOnTop(true);
+        setPined(true);
+    };
+    const unpinWindow = () => {
+        if (closeOnBlur) {
+            unlisten = listenBlur();
+        }
+        appWindow.setAlwaysOnTop(false);
+        setPined(false);
+    };
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
         const [removed] = result.splice(startIndex, 1);
@@ -109,6 +121,17 @@ export default function Translate() {
             setPined(true);
         }
     }, [alwaysOnTop]);
+    // 输入翻译快捷键触发自动置顶
+    useEffect(() => {
+        const unlistenAutoPin = listen('auto_pin', () => {
+            pinWindow();
+        });
+        return () => {
+            unlistenAutoPin.then((f) => {
+                f();
+            });
+        };
+    }, []);
     // 保存窗口位置
     useEffect(() => {
         if (windowPosition !== null && windowPosition === 'pre_state') {
@@ -248,15 +271,10 @@ export default function Translate() {
                         className='my-auto bg-transparent'
                         onPress={() => {
                             if (pined) {
-                                if (closeOnBlur) {
-                                    unlisten = listenBlur();
-                                }
-                                appWindow.setAlwaysOnTop(false);
+                                unpinWindow();
                             } else {
-                                unlistenBlur();
-                                appWindow.setAlwaysOnTop(true);
+                                pinWindow();
                             }
-                            setPined(!pined);
                         }}
                     >
                         <BsPinFill className={`text-[20px] ${pined ? 'text-primary' : 'text-default-400'}`} />
